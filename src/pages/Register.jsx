@@ -145,7 +145,7 @@ export default function Register() {
               value={formData.full_name}
               onChange={handleChange}
               className="w-full px-4 py-3 bg-white/70 border border-white/60 rounded-xl text-slate-900 text-sm font-medium focus:outline-none focus:bg-white focus:border-blue-600 transition-all placeholder:text-slate-500 shadow-inner"
-              placeholder="E.G. LEONARD GEPOSON"
+              placeholder="Bug-os nim nga ngaran"
             />
           </div>
 
