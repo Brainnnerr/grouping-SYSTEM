@@ -1,13 +1,14 @@
 import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { fetchTribuMembers, fetchTribuMessages, sendTribuMessage } from '../services/studentService';
-import { Shield, Users, LogOut, Send, MessageSquare, Sparkles, GraduationCap } from 'lucide-react';
+import { fetchTribuMembers, fetchTribuMessages, sendTribuMessage, fetchAnnouncements } from '../services/studentService';
+import { Shield, Users, LogOut, Send, MessageSquare, Sparkles, GraduationCap, Megaphone } from 'lucide-react';
 
 export default function Dashboard() {
   const navigate = useNavigate();
   const [student, setStudent] = useState(null);
   const [tribuMembers, setTribuMembers] = useState([]);
   const [messages, setMessages] = useState([]);
+  const [announcements, setAnnouncements] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [activeTab, setActiveTab] = useState('roster'); // 'roster' or 'chat'
   const [sending, setSending] = useState(false);
@@ -29,16 +30,18 @@ export default function Dashboard() {
 
       const chatMsgs = await fetchTribuMessages(parsedStudent.tribu_name);
       setMessages(chatMsgs);
+
+      const anns = await fetchAnnouncements();
+      setAnnouncements(anns);
     };
 
     loadDashboardData();
 
-    // Live polling interval for members and chat feed sync every 3 seconds
+    // Live polling interval every 3 seconds
     const interval = setInterval(loadDashboardData, 3000);
     return () => clearInterval(interval);
   }, [navigate]);
 
-  // Auto scroll chat to bottom when messages update
   useEffect(() => {
     if (activeTab === 'chat') {
       chatBottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -68,7 +71,7 @@ export default function Dashboard() {
       setMessages(chatMsgs);
     } catch (err) {
       console.error('Failed to send message:', err);
-      setChatError(err.message || 'Failed to send message. Check database RLS policies.');
+      setChatError(err.message || 'Failed to send message.');
     } finally {
       setSending(false);
     }
@@ -96,6 +99,26 @@ export default function Dashboard() {
             <LogOut size={16} /> Exit Portal
           </button>
         </div>
+
+        {/* Live Admin Announcements Banner */}
+        {announcements.length > 0 && (
+          <div className="bg-[#8b0000] text-white p-5 sm:p-6 rounded-3xl shadow-md space-y-3">
+            <div className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-red-200">
+              <Megaphone size={18} className="animate-bounce" /> Official FCO Announcements
+            </div>
+            <div className="space-y-3">
+              {announcements.map((ann) => (
+                <div key={ann.id} className="bg-white/10 border border-white/20 p-4 rounded-2xl backdrop-blur-xs">
+                  <h3 className="font-extrabold text-sm text-white">{ann.title}</h3>
+                  <p className="text-xs text-red-100 mt-1 leading-relaxed">{ann.message}</p>
+                  <span className="text-[10px] text-red-200/80 mt-2 block font-mono">
+                    {new Date(ann.created_at).toLocaleString()}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Tribu Assignment Banner */}
         <div className="bg-white border border-slate-200 p-6 sm:p-8 rounded-3xl shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
@@ -131,7 +154,7 @@ export default function Dashboard() {
                 : 'bg-white text-slate-600 hover:text-slate-900 border border-slate-200'
             }`}
           >
-            <GraduationCap size={16} /> Ka-Tribu ({tribuMembers.length})
+            <GraduationCap size={16} /> Tribu Roster ({tribuMembers.length})
           </button>
           <button
             onClick={() => setActiveTab('chat')}
@@ -148,7 +171,6 @@ export default function Dashboard() {
         {/* Tab Content Display */}
         <div className="pt-1">
           {activeTab === 'roster' ? (
-            /* Tribu Members Roster View */
             <div className="space-y-3">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {tribuMembers.map((member) => {
@@ -183,7 +205,6 @@ export default function Dashboard() {
               </div>
             </div>
           ) : (
-            /* Community Chat Tab View */
             <div className="flex flex-col h-[500px]">
               <div className="flex items-center justify-between mb-3 px-1">
                 <span className="text-xs text-slate-500 font-medium">Interact and coordinate with your Tribu mates</span>
@@ -198,7 +219,6 @@ export default function Dashboard() {
                 </div>
               )}
 
-              {/* Chat Messages List */}
               <div className="flex-1 overflow-y-auto space-y-3 pr-2 mb-4 bg-white border border-slate-200 p-4 rounded-3xl shadow-xs">
                 {messages.length > 0 ? (
                   messages.map((msg) => {
@@ -235,14 +255,13 @@ export default function Dashboard() {
                 <div ref={chatBottomRef} />
               </div>
 
-              {/* Chat Input Bar */}
               <form onSubmit={handleSendMessage} className="flex gap-2">
                 <input 
                   type="text" 
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
                   placeholder="Type a message to your Tribu..."
-                  className="flex-1 px-4 py-3 bg-white border border-slate-300 rounded-xl text-slate-900 text-xs sm:text-sm focus:outline-none focus:border-[#8b0000] transition-colors shadow-xs"
+                  className="flex-1 px-4 py-3 bg-white border border-slate-300 rounded-xl text-slate-900 text-xs sm:text-sm focus:outline-none focus:border-[#8b0000]"
                 />
                 <button 
                   type="submit"

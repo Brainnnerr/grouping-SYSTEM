@@ -171,3 +171,48 @@ export const deleteStudent = async (studentId) => {
   if (error) throw new Error(error.message);
   return true;
 };
+
+
+
+
+// Fetch all announcements for student dashboards
+export const fetchAnnouncements = async () => {
+  const { data, error } = await supabase
+    .from('announcements')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching announcements:', error);
+    return [];
+  }
+  return data;
+};
+
+// Post a new announcement from the Admin panel
+export const postAnnouncement = async (announcementData) => {
+  const { data, error } = await supabase
+    .from('announcements')
+    .insert([
+      {
+        title: announcementData.title,
+        message: announcementData.message
+      }
+    ])
+    .select()
+    .single();
+
+  if (error) throw new Error(error.message);
+  return data;
+};
+
+// Delete an announcement from the Admin panel
+export const deleteAnnouncement = async (id) => {
+  const { error } = await supabase
+    .from('announcements')
+    .delete()
+    .eq('id', id);
+
+  if (error) throw new Error(error.message);
+  return true;
+};

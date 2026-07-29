@@ -242,7 +242,7 @@ export default function Register() {
         </div>
 
         <div className="mt-5 text-center text-[10px] font-semibold text-slate-700 tracking-wider">
-          © BRAINERTECH
+          BRAINERTECH
         </div>
       </div>
     </div>
