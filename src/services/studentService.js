@@ -31,15 +31,18 @@ export const registerStudent = async (studentData) => {
     throw new Error('This student number is already registered!');
   }
 
-  // 2. Get total count to distribute evenly using round-robin modulo logic across the 10 tribus
+  // 2. Get total count to distribute evenly using round-robin modulo logic
+  // Exclude 'Tribu Agos' from active auto-assignments so it no longer accepts new registrations
+  const ACTIVE_TRIBUS = TRIBUS.filter(tribu => tribu !== 'Tribu Agos');
+
   const { count, error: countError } = await supabase
     .from('students')
     .select('*', { count: 'exact', head: true });
 
   if (countError) throw new Error(countError.message);
 
-  const nextIndex = (count || 0) % TRIBUS.length;
-  const assignedTribu = TRIBUS[nextIndex];
+  const nextIndex = (count || 0) % ACTIVE_TRIBUS.length;
+  const assignedTribu = ACTIVE_TRIBUS[nextIndex];
 
   // 3. Insert new student into Supabase
   const { data, error: insertError } = await supabase
@@ -166,3 +169,4 @@ export const deleteStudent = async (studentId) => {
   if (error) throw new Error(error.message);
   return true;
 };
+         
