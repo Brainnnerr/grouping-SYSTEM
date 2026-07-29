@@ -111,7 +111,7 @@ export default function Login() {
         </div>
 
         <div className="mt-6 text-center text-[10px] font-semibold text-slate-700 tracking-wider">
-          © 2026 EASTERN SAMAR STATE UNIVERSITY
+          BRAINERTECH
         </div>
       </div>
     </div>
