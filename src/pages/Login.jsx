@@ -50,7 +50,7 @@ export default function Login() {
         <div className="flex justify-center mb-4">
           <div className="w-20 h-20 bg-white border border-white/80 rounded-full flex items-center justify-center shadow-lg overflow-hidden p-0.5">
             <img 
-              src="/FCO-LOGOO.jpg" 
+              src="/FCO-LOGOO.png" 
               alt="FCO-COE Logo" 
               className="w-full h-full object-cover rounded-full" 
             />
