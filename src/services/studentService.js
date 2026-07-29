@@ -32,8 +32,10 @@ export const registerStudent = async (studentData) => {
   }
 
   // 2. Get total count to distribute evenly using round-robin modulo logic
-  // Exclude 'Tribu Agos' from active auto-assignments so it no longer accepts new registrations
-  const ACTIVE_TRIBUS = TRIBUS.filter(tribu => tribu !== 'Tribu Agos');
+  // Exclude 'Tribu Agos' and 'Tribu Alon' from active auto-assignments so they no longer accept new registrations
+  const ACTIVE_TRIBUS = TRIBUS.filter(
+    (tribu) => tribu !== 'Tribu Agos' && tribu !== 'Tribu Alon'
+  );
 
   const { count, error: countError } = await supabase
     .from('students')
@@ -169,4 +171,3 @@ export const deleteStudent = async (studentId) => {
   if (error) throw new Error(error.message);
   return true;
 };
-         
