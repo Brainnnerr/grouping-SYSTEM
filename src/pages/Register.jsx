@@ -123,7 +123,7 @@ export default function Register() {
             COEstuary 2026
           </h2>
           <p className="text-[11px] font-bold text-slate-800 tracking-widest uppercase">
-            Register Now and Be Assigned to Your Tribu
+            Please use an appropriate name. Otherwise, your registration may be removed from the system.
           </p>
         </div>
 
@@ -145,7 +145,7 @@ export default function Register() {
               value={formData.full_name}
               onChange={handleChange}
               className="w-full px-4 py-3 bg-white/70 border border-white/60 rounded-xl text-slate-900 text-sm font-medium focus:outline-none focus:bg-white focus:border-blue-600 transition-all placeholder:text-slate-500 shadow-inner"
-              placeholder="Bug-os nim nga ngaran"
+              placeholder="Lj Geposon"
             />
           </div>
 
